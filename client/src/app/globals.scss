@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.pin {
+  width: 4px;
+  height: 10px;
+  background: white;
+  position: relative;
+  z-index: 1;
+  &:before {
+    content: "";
+    position: absolute;
+    top: -7px;
+    border: 1px solid black;
+    border-radius: 100%;
+    width: 5px;
+    height: 5px;
+    transform: translateX(-10%);
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    height: 12px;
+    width: 1px;
+    bottom: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: black;
+    z-index: 0;
+  }
+}
+
+.histogram {
+}
+.tooltip {
+  display: flex;
+  flex-direction: column;
+  .title {
+    font-weight: 600;
+  }
+}
