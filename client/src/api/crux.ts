@@ -11,6 +11,7 @@ export const getCrUXReport = async (urls: string, apiMethod: ApiMethod) => {
     const response = await (
       await fetch("https://crux-app-server.vercel.app/api/crux", {
         method: "POST",
+        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
