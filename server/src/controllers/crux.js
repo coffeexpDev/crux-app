@@ -11,6 +11,7 @@ const queryCruxApi = async (queryOptions, retryCounter = 1) => {
     queryOptions.method === "history" ? "queryHistoryRecord" : "queryRecord";
 
   const { urls } = queryOptions.body;
+  console.log("urls =>", urls);
 
   const promises = urls.map((url) => {
     return new Promise(async (resolve, reject) => {
