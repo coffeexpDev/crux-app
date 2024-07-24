@@ -1,44 +1,62 @@
 const CrUX = {};
 
+const normalizeUrl = (url) => {
+  const u = new URL(url);
+  return u.origin + u.pathname;
+};
+
 const queryCruxApi = async (queryOptions, retryCounter = 1) => {
   CrUX.API_KEY = process.env.API_KEY || "no-key";
   CrUX.METHOD =
     queryOptions.method === "history" ? "queryHistoryRecord" : "queryRecord";
-  try {
-    const res = await fetch(
-      `https://chromeuxreport.googleapis.com/v1/records:${CrUX.METHOD}?key=${CrUX.API_KEY}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json; charset=UTF-8",
-        },
-        body: JSON.stringify(queryOptions.body),
-      }
-    );
-    if (res.status >= 500)
-      throw new Error(`Invalid CrUX API status: ${res.status}`);
 
-    const json = await res.json();
-    const { error } = json;
-    if (json && json.error) {
-      const { error } = json;
-      if (error.code === 404) return null;
-      if (error.code === 429)
-        return retryAfterTimeout(retryCounter, () =>
-          queryCruxApi(queryOptions, retryCounter + 1)
+  const { urls } = queryOptions.body;
+
+  const promises = urls.map((url) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const normalizedUrl = normalizeUrl(url);
+        const res = await fetch(
+          `https://chromeuxreport.googleapis.com/v1/records:${CrUX.METHOD}?key=${CrUX.API_KEY}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json; charset=UTF-8",
+            },
+            body: JSON.stringify({
+              url: normalizedUrl,
+              metrics: queryOptions.body.metrics,
+            }),
+          }
         );
-      throw new Error(JSON.stringify(error));
-    }
+        if (res.status >= 500) reject(`Invalid CrUX API status: ${res.status}`);
 
-    return json;
-  } catch (error) {
-    res.status(error.code).send(error.message);
-  }
+        const json = await res.json();
+        console.log("error =>", res);
+        const { error } = json;
+        if (json && json.error) {
+          const { error } = json;
+          if (error.status === 404) return null;
+          if (error.status === 429)
+            return retryAfterTimeout(retryCounter, () =>
+              queryCruxApi(queryOptions, retryCounter + 1)
+            );
+          reject(JSON.stringify(error));
+        }
+
+        resolve(json);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  });
+
+  const responses = await Promise.allSettled(promises);
+  return responses;
 };
 
 const crux = async (req, res) => {
   const { method, ...query } = req.body;
-  console.log("req body => ", { method, query });
   const queryObject = {
     method,
     body: query,

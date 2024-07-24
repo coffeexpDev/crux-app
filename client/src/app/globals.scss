@@ -39,12 +39,38 @@
   }
 }
 
-.histogram {
-}
 .tooltip {
   display: flex;
   flex-direction: column;
   .title {
     font-weight: 600;
+  }
+}
+
+@keyframes slide-from-right {
+  0% {
+    transform: translate(1000%, 0);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(0%, 0);
+    opacity: 1;
+  }
+}
+
+.slide-in-from-right {
+  animation: slide-from-right 300ms cubic-bezier(1, 1.1, 0, 1) 0s 1;
+  animation-fill-mode: forwards;
+}
+.slide-out-to-right {
+  animation: slide-from-right 300ms cubic-bezier(1, 1.1, 0, 1) 0s 1;
+  animation-fill-mode: backwards;
+}
+
+.MuiBox-root {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
