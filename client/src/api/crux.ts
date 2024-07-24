@@ -9,7 +9,7 @@ export const getCrUXReport = async (urls: string, apiMethod: ApiMethod) => {
       .filter((_) => _.trim() !== "")
       ?.map((_) => _.trim());
     const response = await (
-      await fetch("http://localhost:5000/api/crux", {
+      await fetch("https://crux-app-server.vercel.app/api/crux", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -19,6 +19,7 @@ export const getCrUXReport = async (urls: string, apiMethod: ApiMethod) => {
         }),
       })
     ).json();
+    console.log("response =>", response);
     if (!!response) {
       const success = response?.filter((r: any) => r.status === "fulfilled");
       const failed = response?.filter((r: any) => r.status === "rejected");
@@ -39,5 +40,12 @@ export const getCrUXReport = async (urls: string, apiMethod: ApiMethod) => {
         ?.filter((r: any) => r.status === "fulfilled")
         .map((_: any) => _.value);
     }
-  } catch (error) {}
+  } catch (error) {
+    useToast.getState().showToast("error", {
+      error: {
+        message: `Unexpected error occured`,
+      },
+    });
+    return [];
+  }
 };

@@ -114,10 +114,6 @@ const AppContent = () => {
             onChange={(e) => setUrls(e.target.value)}
             size="small"
           />
-          <div className="text-xs text-black text-opacity-10">
-            Enter multiple urls by seperating them with commas(,). Example:
-            "https://web.dev,https://www.google.com"
-          </div>
 
           <FormControlLabel
             control={<Switch />}
@@ -134,6 +130,10 @@ const AppContent = () => {
             Search
           </Button>
         </div>
+        <div className="text-xs text-black text-opacity-50">
+          Enter multiple urls by seperating them with commas(,). Example:
+          "https://web.dev,https://www.google.com"
+        </div>
         <div className="flex gap-1 mt-5">
           {urls &&
             urls
@@ -149,6 +149,7 @@ const AppContent = () => {
               ))}
         </div>
       </form>
+
       <div className="mt-10 flex flex-col gap-0">
         <h3 className="font-bold w-full border-b-[0.5px] border-b-black border-opacity-10 text-lg">
           <div className="flex w-full justify-between items-center pb-2.5">
