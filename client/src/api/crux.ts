@@ -9,12 +9,10 @@ export const getCrUXReport = async (urls: string, apiMethod: ApiMethod) => {
       .filter((_) => _.trim() !== "")
       ?.map((_) => _.trim());
     const response = await (
-      await fetch("https://crux-app-server.vercel.app/api/crux", {
+      await fetch("http://localhost:5000/api/crux", {
         method: "POST",
-        mode: "no-cors",
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
         },
         body: JSON.stringify({
           urls: urlArray,

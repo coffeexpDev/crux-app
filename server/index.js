@@ -10,15 +10,6 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api", router);
-// Add Access Control Allow Origin headers
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
